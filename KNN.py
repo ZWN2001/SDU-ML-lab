@@ -2,9 +2,9 @@ import numpy as np
 from sklearn.datasets import load_iris
 from sklearn.metrics import accuracy_score
 from sklearn.model_selection import train_test_split, KFold
+from sklearn.preprocessing import StandardScaler
 import matplotlib.pyplot as plt
 import matplotlib
-
 
 class KNNClassifier:
     def __init__(self, k=3):
@@ -20,7 +20,9 @@ class KNNClassifier:
     def predict(self, x_test):
         mlabels = []
         for x in x_test:
-            distances = [np.sqrt(np.sum((x_train - x) ** 2)) for x_train in self.x_train]
+            # replace MinMaxScaler with StandardScaler
+            distances = [np.sqrt(np.sum(
+                ((x_train - x) / np.std(self.x_train, axis=0)) ** 2)) for x_train in self.x_train]
             nearest = np.argsort(distances)[:self.k]
             top_k_y = [self.y_train[index] for index in nearest]
             d = {}
@@ -37,6 +39,10 @@ if __name__ == '__main__':
     iris = load_iris()
 
     X_train, X_test, y_train, y_test = train_test_split(iris.data, iris.target, test_size=0.3)
+
+    scaler = StandardScaler()
+    X_train = scaler.fit_transform(X_train)
+    X_test = scaler.transform(X_test)
 
     k_values = range(1, 31)
     kf = KFold(n_splits=5)
