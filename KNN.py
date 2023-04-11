@@ -2,6 +2,7 @@ import numpy as np
 from sklearn.datasets import load_iris
 from sklearn.model_selection import train_test_split
 import matplotlib.pyplot as plt
+import matplotlib
 
 
 class KNNClassifier:
@@ -25,34 +26,37 @@ class KNNClassifier:
             for cls in top_k_y:
                 d[cls] = d.get(cls, 0) + 1
             d_list = list(d.items())
-            d_list.sort(key=lambda xi: x[1], reverse=True)
-            mlabels.append(d_list[0][0])
+            d_list.sort(key=lambda x: x[1], reverse=True)
+            if len(d_list) > 0:
+                mlabels.append(d_list[0][0])
         return mlabels
 
 
 if __name__ == '__main__':
     iris = load_iris()
-    m_k = 4
+
+    max_k = 6
+    min_k = 3
     times = 4
-    result = np.zeros((m_k, times), dtype=int)
-    for i in range(times):
+    result = np.zeros((max_k - min_k + 1, times), dtype=float)
+    for i in range(0, times):
         X_train, X_test, y_train, y_test = train_test_split(iris.data, iris.target, test_size=0.25)
-        for j in range(m_k):
+        for j in range(min_k, max_k + 1):
             clf = KNNClassifier(k=j)
             clf.fit(X_train, y_train)
             y_pred = clf.predict(X_test)
             accuracy = np.mean(y_pred == y_test)
-            result[j][i] = accuracy
-
+            result[j - min_k][i] = accuracy
 
     # 折线图
-    x = list(range(1, m_k))  # 横坐标
+    matplotlib.use('TkAgg')
+    x = list(range(1, times + 1))  # 横坐标
 
-    plt.plot(x, result[1], '-.', color='r', label="K=1")
-    plt.plot(x, result[2], '-.', color='g', label="K=2")
-    plt.plot(x, result[3], '-.', color='b', label="K=3")
-    plt.plot(x, result[4], '-.', color='o', label="K=4")
-    plt.xlabel("第i次")  # 横坐标名字
-    plt.ylabel("准确率")  # 纵坐标名字
+    plt.plot(x, result[0], 'o-.', color='r', label="K=3")
+    plt.plot(x, result[1], 'x-.', color='g', label="K=4")
+    plt.plot(x, result[2], '*-.', color='b', label="K=5")
+    plt.plot(x, result[3], '--', color='y', label="K=6")
+    plt.xlabel("x")  # 横坐标名字
+    plt.ylabel("accuracy")  # 纵坐标名字
     plt.legend(loc="best")  # 图例
     plt.show()
