@@ -1,6 +1,7 @@
 import numpy as np
 from sklearn.datasets import load_iris
-from sklearn.model_selection import train_test_split
+from sklearn.metrics import accuracy_score
+from sklearn.model_selection import train_test_split, KFold
 import matplotlib.pyplot as plt
 import matplotlib
 
@@ -35,28 +36,39 @@ class KNNClassifier:
 if __name__ == '__main__':
     iris = load_iris()
 
-    max_k = 6
-    min_k = 3
-    times = 4
-    result = np.zeros((max_k - min_k + 1, times), dtype=float)
-    for i in range(0, times):
-        X_train, X_test, y_train, y_test = train_test_split(iris.data, iris.target, test_size=0.25)
-        for j in range(min_k, max_k + 1):
-            clf = KNNClassifier(k=j)
-            clf.fit(X_train, y_train)
-            y_pred = clf.predict(X_test)
-            accuracy = np.mean(y_pred == y_test)
-            result[j - min_k][i] = accuracy
+    X_train, X_test, y_train, y_test = train_test_split(iris.data, iris.target, test_size=0.3)
 
-    # 折线图
+    k_values = range(1, 31)
+    kf = KFold(n_splits=5)
+
+    mean_accuracy_values = []
+    for k in k_values:
+        accuracy_values = []
+        for train_index, val_index in kf.split(X_train, y_train):
+            X_train_fold, X_val_fold = X_train[train_index], X_train[val_index]
+            y_train_fold, y_val_fold = y_train[train_index], y_train[val_index]
+
+            knn = KNNClassifier(k=k)
+            knn.fit(X_train_fold, y_train_fold)
+            y_pred_val = knn.predict(X_val_fold)
+
+            accuracy_values.append(accuracy_score(y_val_fold, y_pred_val))
+
+        mean_accuracy = np.mean(accuracy_values)
+        mean_accuracy_values.append(mean_accuracy)
+
     matplotlib.use('TkAgg')
-    x = list(range(1, times + 1))  # 横坐标
-
-    plt.plot(x, result[0], 'o-.', color='r', label="K=3")
-    plt.plot(x, result[1], 'x-.', color='g', label="K=4")
-    plt.plot(x, result[2], '*-.', color='b', label="K=5")
-    plt.plot(x, result[3], '--', color='y', label="K=6")
-    plt.xlabel("x")  # 横坐标名字
-    plt.ylabel("accuracy")  # 纵坐标名字
-    plt.legend(loc="best")  # 图例
+    plt.plot(k_values, mean_accuracy_values)
+    plt.title("Cross-Validation Accuracy over k")
+    plt.xlabel("k")
+    plt.ylabel("Accuracy")
     plt.show()
+
+    best_k = k_values[np.argmax(mean_accuracy_values)]
+    print(f"Best value of k: {best_k}")
+
+    knn = KNNClassifier(k=best_k)
+    knn.fit(X_train, y_train)
+    y_pred_test = knn.predict(X_test)
+    test_accuracy = accuracy_score(y_test, y_pred_test)
+    print(f"Test accuracy with k={best_k}: {test_accuracy:.2f}")
