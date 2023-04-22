@@ -101,9 +101,43 @@ class DecisionTree:
         node.right = self.build_tree(X_right, y_right, depth + 1)
         return node
 
+        # 剪枝函数
+
+    def prune(self, node, X_val, y_val):
+        if node.left is None and node.right is None:
+            return False
+        # 遍历左右子树，并记录下所有叶节点
+        if node.left and not self.prune(node.left, X_val, y_val):
+            return False
+        if node.right and not self.prune(node.right, X_val, y_val):
+            return False
+        # 保存子树，接下来我们将尝试裁剪它
+        tmp_left = node.left
+        tmp_right = node.right
+        # 裁剪子树，将其变为一个叶节点
+        node.left = None
+        node.right = None
+        # 计算裁剪前的准确率
+        y_pred = self.predict(X_val)
+        accuracy_before = np.mean(y_pred == y_val)
+        # 计算裁剪后的准确率
+        leaf_value = self.leaf_value(y_val)
+        y_pred = [leaf_value] * len(y_val)
+        accuracy_after = np.mean(y_pred == y_val)
+        if accuracy_before <= accuracy_after:
+            # 裁剪后的准确率更高，则保留剪枝后的叶节点
+            node.left = tmp_left
+            node.right = tmp_right
+            return False
+        else:
+            # 裁剪后的准确率更低，则保留未剪枝的节点
+            return True
+
     # 使用训练数据集创建决策树
     def fit(self, X, y):
-        self.root = self.build_tree(X, y)
+        X_train, X_val, y_train, y_val = train_test_split(X, y, test_size=0.2)  # 随机选择20%的数据作为验证集
+        self.root = self.build_tree(X_train, y_train)
+        self.prune(self.root, X_val, y_val)  # 剪枝
 
     # 预测单个样本的类别
     def _predict(self, x, node):
@@ -114,12 +148,19 @@ class DecisionTree:
         else:
             return self._predict(x, node.right)
 
-    # 对测试数据集进行预测
-    def predict(self, X_test):
-        y_pred = []
-        for i in range(X_test.shape[0]):
-            y_pred.append(self._predict(X_test[i], self.root))
-        return np.array(y_pred)
+    # 剪枝后的预测函数
+    def predict(self, X):
+        assert self.root is not None, "build_tree at first"
+        y = []
+        for x in X:
+            node = self.root
+            while node.left:
+                if x[node.feature] < node.threshold:
+                    node = node.left
+                else:
+                    node = node.right
+            y.append(node.value)
+        return np.array(y)
 
 
 if __name__ == '__main__':
