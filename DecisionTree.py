@@ -1,6 +1,8 @@
 import numpy as np
 from sklearn.datasets import load_iris
 from sklearn.model_selection import train_test_split
+import matplotlib.pyplot as plt
+import matplotlib
 
 
 # 定义节点类
@@ -165,9 +167,24 @@ class DecisionTree:
 
 if __name__ == '__main__':
     iris = load_iris()
+
+    matplotlib.use('TkAgg')
+
+    # 决策树深度的影响
+    depth = range(3, 13)
+    accuracies = []
     X_train, X_test, y_train, y_test = train_test_split(iris.data, iris.target, test_size=0.25)
-    clf = DecisionTree(max_depth=3, min_samples_split=2, min_samples_leaf=1)
-    clf.fit(X_train, y_train)
-    y_pred = clf.predict(X_test)
-    accuracy = np.mean(y_pred == y_test)
-    print("测试集准确率：", accuracy)
+
+    for i in depth:
+        clf = DecisionTree(max_depth=i, min_samples_split=2, min_samples_leaf=1)
+        clf.fit(X_train, y_train)
+        y_pred = clf.predict(X_test)
+        accuracies.append(np.mean(y_pred == y_test))
+
+    plt.plot(depth, accuracies)
+
+    plt.xlabel("depth")
+    plt.ylabel("Accuracy")
+    plt.show()
+
+
