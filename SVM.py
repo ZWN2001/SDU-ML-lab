@@ -6,17 +6,16 @@ from sklearn.preprocessing import StandardScaler
 
 class SVM:
 
-    def __init__(self, C=1.0, kernel='rbf', degree=3, gamma=0.1, constant=0.0, tol=1e-3, max_iter=100):
+    def __init__(self, C=1.0, kernel='rbf', degree=3, gamma=0.1, tol=1e-3, max_iter=100):
         self.C = C  # 惩罚参数
-        self.kernel = kernel  # 核函数类型
+        self.kernel = kernel  # 核函数类型,这里只写了rbf
         self.degree = degree  # 多项式核的阶数
         self.gamma = gamma  # 核函数参数
-        self.constant = constant  # 常数项
         self.tol = tol  # 精度
         self.max_iter = max_iter  # 最大迭代次数，-1表示无限制
         self.alpha = None  # 拉格朗日乘子
         self.b = None  # 截距
-        self.X = None  # 训练样本(为了方便存储，我们不对样本进行中心化操作)
+        self.X = None  # 训练样本
         self.y = None  # 标签
 
     def fit(self, X1, y1):
@@ -27,21 +26,12 @@ class SVM:
         n_samples, n_features = X1.shape
         # 计算核矩阵
         K = np.zeros((n_samples, n_samples))
-        if self.kernel == 'linear':
-            for i in range(n_samples):
-                for j in range(n_samples):
-                    K[i, j] = np.dot(X1[i], X1[j])
-        elif self.kernel == 'poly':
-            for i in range(n_samples):
-                for j in range(n_samples):
-                    K[i, j] = (np.dot(X1[i], X1[j]) + self.constant) ** self.degree
-        elif self.kernel == 'rbf':
-            for i in range(n_samples):
-                for j in range(n_samples):
-                    diff = X1[i] - X1[j]
-                    K[i, j] = np.exp(-self.gamma * np.dot(diff, diff))
-        else:
-            raise ValueError('Unsupported kernel type.')
+
+        for i in range(n_samples):
+            for j in range(n_samples):
+                diff = X1[i] - X1[j]
+                K[i, j] = np.exp(-self.gamma * np.dot(diff, diff))
+
         # 初始化拉格朗日乘子
         alpha = np.zeros(n_samples)
         # 外层循环
@@ -102,21 +92,13 @@ class SVM:
         assert self.alpha is not None and self.X is not None and self.y is not None
         n_samples, n_features = X1.shape
         y_pred_result = []
-        if self.kernel == 'linear':
-            for i in range(n_samples):
-                y_pred_result.append(np.sign(np.sum(self.alpha * self.y * np.dot(self.X, X1[i])) + self.b))
-        elif self.kernel == 'poly':
-            for i in range(n_samples):
-                y_pred_result.append(np.sign(
-                    np.sum(self.alpha * self.y * ((np.dot(self.X, X1[i]) + self.constant) ** self.degree)) + self.b))
-        elif self.kernel == 'rbf':
-            for i in range(n_samples):
-                s = 0
-                for alpha, xi, yi in zip(self.alpha, self.X, self.y):
-                    s += alpha * yi * np.exp(-self.gamma * np.linalg.norm(xi - X1[i]) ** 2)
-                y_pred_result.append(np.sign(s + self.b))
-        else:
-            raise ValueError('Unsupported kernel type.')
+
+        for i in range(n_samples):
+            s = 0
+            for alpha, xi, yi in zip(self.alpha, self.X, self.y):
+                s += alpha * yi * np.exp(-self.gamma * np.linalg.norm(xi - X1[i]) ** 2)
+            y_pred_result.append(np.sign(s + self.b))
+
         return np.array(y_pred_result)
 
 
@@ -140,7 +122,7 @@ if __name__ == '__main__':
     best_C = 0
     best_gamma = 0
     y_pred = np.zeros_like(y_test)
-    clf = SVM(C=0.8, kernel='rbf', gamma=0.4, max_iter=500)
+    clf = SVM(C=0.8, gamma=0.4, max_iter=500)
     for k in range(3):
         # 将k类样本设为+1，其他样本设为-1
         y_train_ova = np.where(y_train == k, 1, -1)
