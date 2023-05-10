@@ -6,12 +6,12 @@ from sklearn.preprocessing import StandardScaler
 
 class SVM:
 
-    def __init__(self, C=1.0, kernel='rbf', degree=3, gamma=0.1, coef0=0.0, tol=1e-3, max_iter=100):
+    def __init__(self, C=1.0, kernel='rbf', degree=3, gamma=0.1, constant=0.0, tol=1e-3, max_iter=100):
         self.C = C  # 惩罚参数
         self.kernel = kernel  # 核函数类型
         self.degree = degree  # 多项式核的阶数
         self.gamma = gamma  # 核函数参数
-        self.coef0 = coef0  # 常数项
+        self.constant = constant  # 常数项
         self.tol = tol  # 精度
         self.max_iter = max_iter  # 最大迭代次数，-1表示无限制
         self.alpha = None  # 拉格朗日乘子
@@ -34,7 +34,7 @@ class SVM:
         elif self.kernel == 'poly':
             for i in range(n_samples):
                 for j in range(n_samples):
-                    K[i, j] = (np.dot(X1[i], X1[j]) + self.coef0) ** self.degree
+                    K[i, j] = (np.dot(X1[i], X1[j]) + self.constant) ** self.degree
         elif self.kernel == 'rbf':
             for i in range(n_samples):
                 for j in range(n_samples):
@@ -60,7 +60,7 @@ class SVM:
                     E_j = np.sum(alpha * self.y * K[:, j]) + self.b - self.y[j]
                     # 保存alpha的旧值
                     alpha_i_old, alpha_j_old = alpha[i], alpha[j]
-                    # 计算L,H
+
                     if self.y[i] == self.y[j]:
                         L = max(0, alpha[j] + alpha[i] - self.C)
                         H = min(self.C, alpha[j] + alpha[i])
@@ -108,7 +108,7 @@ class SVM:
         elif self.kernel == 'poly':
             for i in range(n_samples):
                 y_pred_result.append(np.sign(
-                    np.sum(self.alpha * self.y * ((np.dot(self.X, X1[i]) + self.coef0) ** self.degree)) + self.b))
+                    np.sum(self.alpha * self.y * ((np.dot(self.X, X1[i]) + self.constant) ** self.degree)) + self.b))
         elif self.kernel == 'rbf':
             for i in range(n_samples):
                 s = 0
