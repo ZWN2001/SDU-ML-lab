@@ -101,23 +101,23 @@ class SVM:
     def predict(self, X1):
         assert self.alpha is not None and self.X is not None and self.y is not None
         n_samples, n_features = X1.shape
-        y_pred = []
+        y_pred_result = []
         if self.kernel == 'linear':
             for i in range(n_samples):
-                y_pred.append(np.sign(np.sum(self.alpha * self.y * np.dot(self.X, X1[i])) + self.b))
+                y_pred_result.append(np.sign(np.sum(self.alpha * self.y * np.dot(self.X, X1[i])) + self.b))
         elif self.kernel == 'poly':
             for i in range(n_samples):
-                y_pred.append(np.sign(
+                y_pred_result.append(np.sign(
                     np.sum(self.alpha * self.y * ((np.dot(self.X, X1[i]) + self.coef0) ** self.degree)) + self.b))
         elif self.kernel == 'rbf':
             for i in range(n_samples):
                 s = 0
                 for alpha, xi, yi in zip(self.alpha, self.X, self.y):
                     s += alpha * yi * np.exp(-self.gamma * np.linalg.norm(xi - X1[i]) ** 2)
-                y_pred.append(np.sign(s + self.b))
+                y_pred_result.append(np.sign(s + self.b))
         else:
             raise ValueError('Unsupported kernel type.')
-        return np.array(y_pred)
+        return np.array(y_pred_result)
 
 
 if __name__ == '__main__':
