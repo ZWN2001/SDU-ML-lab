@@ -131,7 +131,7 @@ if __name__ == '__main__':
     X = scaler.fit_transform(X)
 
     # 划分训练集和测试集
-    X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.1)
+    X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2)
 
     # 训练SVM模型
     C = np.arange(0.8, 3, 0.1)
