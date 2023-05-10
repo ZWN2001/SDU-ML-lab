@@ -1,10 +1,7 @@
 import numpy as np
-import matplotlib.pyplot as plt
-from matplotlib.colors import ListedColormap
 from sklearn import datasets
 from sklearn.model_selection import train_test_split
 from sklearn.preprocessing import StandardScaler
-import matplotlib
 
 
 class SVM:
@@ -128,6 +125,7 @@ if __name__ == '__main__':
     iris = datasets.load_iris()
     X = iris.data
     y = iris.target
+
     # 标准化
     scaler = StandardScaler()
     X = scaler.fit_transform(X)
@@ -135,16 +133,26 @@ if __name__ == '__main__':
     # 划分训练集和测试集
     X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.1)
 
-    C = np.arange(0.1, 4, 0.1)
-    gamma = np.arange(0.1, 1, 0.05)
+    # 训练SVM模型
+    C = np.arange(0.8, 3, 0.1)
+    gamma = np.arange(0.4, 1, 0.1)
     best_score = 0
-    for i in range(len(C)):
-        for j in range(len(gamma)):
-            # 训练SVM模型
-            clf = SVM(C=C[i], kernel='rbf', degree=3, gamma=gamma[j], tol=1e-3, max_iter=500)
-            clf.fit(X_train, y_train)
-            Z = clf.predict(X_test)
-            acc = np.mean(Z == y_test)
-            if acc > best_score:
-                best_score = acc
-    print('最佳测试集准确率：{:.2f}%'.format(best_score * 100))
+    best_C = 0
+    best_gamma = 0
+    y_pred = np.zeros_like(y_test)
+    clf = SVM(C=0.8, kernel='rbf', gamma=0.4, max_iter=500)
+    for k in range(3):
+        # 将k类样本设为+1，其他样本设为-1
+        y_train_ova = np.where(y_train == k, 1, -1)
+        clf.fit(X_train, y_train_ova)
+        y_test_ova = np.where(y_test == k, 1, -1)
+        y_pred_ova = clf.predict(X_test)
+        # 将+1类预测结果转化为k
+        y_pred_ova[y_pred_ova > 0] = k
+        y_pred[y_test_ova == 1] = y_pred_ova[y_test_ova == 1]
+
+    acc = np.mean(y_pred == y_test)
+    print('Accuracy:', acc)
+
+
+
