@@ -115,14 +115,8 @@ if __name__ == '__main__':
     # 划分训练集和测试集
     X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2)
 
-    # 训练SVM模型
-    C = np.arange(0.8, 3, 0.1)
-    gamma = np.arange(0.4, 1, 0.1)
-    best_score = 0
-    best_C = 0
-    best_gamma = 0
     y_pred = np.zeros_like(y_test)
-    clf = SVM(C=0.8, gamma=0.4, max_iter=500)
+    clf = SVM(C=0.6, gamma=0.8, max_iter=500)
     for k in range(3):
         # 将k类样本设为+1，其他样本设为-1
         y_train_ova = np.where(y_train == k, 1, -1)
