@@ -18,9 +18,7 @@ categories: 机器学习
 #### 基本知识：贝叶斯定理
 
 首先，贝叶斯定理：
-$$
-P(c\ |\ \mathbf{x}) = \frac{P(\mathbf{x}\ |\ c) P(c)}{P(\mathbf{x})}
-$$
+$$P(c\ |\ \mathbf{x}) = \frac{P(\mathbf{x}\ |\ c) P(c)}{P(\mathbf{x})}$$
 在贝叶斯定理中，每个概率都有约定俗成的名称：
 
 - $P(c\ |\ \mathbf{x})$ 是类标记 $c$ 相对于样本 $\mathbf{x}$ 的条件概率，也由于得自 $\mathbf{x}$ 的取值而被称作 $c$ 的后验概率。
@@ -28,7 +26,7 @@ $$
 - $P(c)$ 是 $c$ 的先验概率（也称为边缘概率），之所以称为"先验"是因为它不考虑任何 $\mathbf{x}$ 方面的因素。在这里又称为**类先验（prior）概率**。
 - $P(\mathbf{x})$ 是 $\mathbf{x}$ 的先验概率。在这里是用作归一化的**证据（evidence）因子**，与类标记无关。
 
-有了贝叶斯定理，如何估计后验概率 $P(c\ |\ \mathbf{x})$ 的问题就转化为**如何计算类先验概率 $P(c)$ 和类条件概率 $P(\mathbf{x}\ |\ c)$ **了。
+有了贝叶斯定理，如何估计后验概率 $P(c\ |\ \mathbf{x})$ 的问题就转化为如何计算类先验概率 $P(c)$ 和类条件概率 $P(\mathbf{x}\ |\ c)$了。
 
 类先验概率 $P(c)$ 表示的是**样本空间中各类样本的比例**，根据大数定律，**当训练集包含足够多的独立同分布样本**时，类先验概率可以直接通过**训练集中各类样本出现的频率**进行估计。
 
@@ -46,27 +44,17 @@ $$
 
 基于这个假设，可以把类条件概率写成连乘的形式，因此贝叶斯定理可重写为：
 
-$$
-P(y_j\ |\ \mathbf{x}) = \frac{P(\mathbf{x}\ |\ y_j) \times P(y_j)}{P(\mathbf{x})} = \frac{P(y_j)}{P(\mathbf{x})} \prod_{i=1}^{d} P(x_i\ |\ y_j)\tag{1}
-$$
+$$P(y_j\ |\ \mathbf{x}) = \frac{P(\mathbf{x}\ |\ y_j) \times P(y_j)}{P(\mathbf{x})} = \frac{P(y_j)}{P(\mathbf{x})} \prod_{i=1}^{d} P(x_i\ |\ y_j)\tag{1}$$
 其中 $d$ 为属性数目， $x_i$ 为样本 $\mathbf{x}$ 在第 $i$ 个属性上的取值。
 
 又因为 $P(\mathbf{x})$ 与类别无关，所以**朴素贝叶斯分类器的表达式**可以写为：
-$$
-h(\mathbf{x}) = \arg \max_{c \in \mathcal{Y}} P(y_j) \prod_{i=1}^{d} P(x_i\ |\ y_j)
-$$
+$$h(\mathbf{x}) = \arg \max_{c \in \mathcal{Y}} P(y_j) \prod_{i=1}^{d} P(x_i\ |\ y_j)$$
 也即：
-$$
-P(y_j\ |\ \mathbf{x}) = \dfrac{h(\mathbf x)}{P(\mathbf x)}
-$$
+$$P(y_j\ |\ \mathbf{x}) = \dfrac{h(\mathbf x)}{P(\mathbf x)}$$
 我们通常假定连续型属性服从高斯分布，则：
-$$
-p(x_i\ |\ y_i) \sim \mathcal{N}(\mu_{y_i,i},\sigma_{y_i,i}^2)
-$$
+$$p(x_i\ |\ y_i) \sim \mathcal{N}(\mu_{y_i,i},\sigma_{y_i,i}^2)$$
 即：
-$$
-P(x_i|y_j)=\frac{1}{\sqrt{2\pi}\sigma_{ij}}e^-\frac{(x_i-\mu_{ij})^2}{2\sigma_{ij}^2}\tag{2}
-$$
+$$P(x_i|y_j)=\frac{1}{\sqrt{2\pi}\sigma_{ij}}e^-\frac{(x_i-\mu_{ij})^2}{2\sigma_{ij}^2}\tag{2}$$
 这样一来整体的思路也就明晰了
 
 &nbsp;
@@ -308,14 +296,10 @@ if __name__ == '__main__':
 
 一个实例的最近邻是根据标准欧氏距离定义的。更精确地讲，把任意的实例x表示为下面的**特征向量**：
 
-$$
-<a_1(x)，a_2(x)，...，a_n(x)>
-$$
+$$<a_1(x)，a_2(x)，...，a_n(x)>$$
 其中 $a_r(x)$ 表示实例 $x$ 的第 $r$ 个属性值。那么两个实例 $x_i$ 和 $x_j$ 间的距离定义为 $d(x_i,x_j)$，其中： 
 
-$$
-r =  d(x_i,x_j)=\sqrt{\sum\nolimits_{i=1}^{n} [a_r(x_i)−a_r(x_j)]^2}
-$$
+$$r =  d(x_i,x_j)=\sqrt{\sum\nolimits_{i=1}^{n} [a_r(x_i)−a_r(x_j)]^2}$$
 
 实验中我选择使用欧式距离，使用K折交叉验证确定对于鸢尾花数据集最合适的K值。
 
@@ -643,11 +627,9 @@ if __name__ == '__main__':
 
 在决策树模型中，我们不断进行判定的初衷是希望**划分后需要考虑的可能更少**，准确地说，是希望所得子节点的**纯度（purity）**更高（也可以说是混乱程度更低）。
 
-**信息熵（information entropy）**是一种衡量样本集纯度的常用指标：
-$$
-Ent(D) = -\sum_{k=1}^{|\mathcal{Y}|}p_klog_2p_k
-$$
-**一定要记得最前面的负号！！！**其中 $|\mathcal{Y}|$ 为类别集合，$p_k$ 为该类样本占样本总数的比例。
+**信息熵（information entropy**)是一种衡量样本集纯度的常用指标：
+$$Ent(D) = -\sum_{k=1}^{|\mathcal{Y}|}p_klog_2p_k$$
+**一定要记得最前面的负号**！！！其中 $|\mathcal{Y}|$ 为类别集合，$p_k$ 为该类样本占样本总数的比例。
 
 **信息熵越大，表示样本集的混乱程度越高，纯度越低**。
 
@@ -655,9 +637,7 @@ $$
 
 **信息增益（information gain）**是**ID3算法**采用的选择准则，定义如下：
 
-$$
-Gain(D,a) = Ent(D) - \sum_{v=1}^{V}\frac{|D^v|}{|D|}Ent(D^v)
-$$
+$$Gain(D,a) = Ent(D) - \sum_{v=1}^{V}\frac{|D^v|}{|D|}Ent(D^v)$$
 它描述的是按某种属性划分后纯度的提升，**信息增益越大，代表用属性 $a$ 进行划分所获得的纯度提升越大**。其中 $V$ 表示属性 $a$ 的属性值集合，$D^v$ 表示属性值为 $v$ 的数据子集。求和项也称为**条件熵**，我们可以理解为它是先求出每个数据子集的信息熵，然后按每个数据子集占原数据集的比例来赋予权重，比例越大，对提升纯度的帮助就越大。
 
 多个属性都取得最大的信息增益时，任选一个即可。
@@ -679,15 +659,10 @@ $$
 
 基尼值：
 
-$$
-Gini(D) = \sum_{k=1}^{|\mathcal{Y}|}\sum_{k' \neq k}p_kp_{k'}\\
-=1-\sum_{k=1}^{|\mathcal{Y}|}p_k^2
-$$
+$$Gini(D) = \sum_{k=1}^{|\mathcal{Y}|}\sum_{k' \neq k}p_kp_{k'}\=1-\sum_{k=1}^{|\mathcal{Y}|}p_k^2$$
 基尼指数：
 
-$$
-Gini\_index(D,a) = \sum_{v=1}^{V}\frac{|D^v|}{|D|}Gini(D^v)
-$$
+$$Gini\_index(D,a) = \sum_{v=1}^{V}\frac{|D^v|}{|D|}Gini(D^v)$$
 基尼值是另一种衡量样本集纯度的指标。反映的是**从一个数据集中随机抽取两个样本，其类别标志不同的概率**。
 
 **基尼值越小，样本集的纯度越高**。
@@ -1083,36 +1058,26 @@ if __name__ == '__main__':
 
 * 首先选取适当的核函数 $K(x,z)$ 和适当的参数 $C$，构造最优化问题  
 
-  $$
-  \begin{aligned} & \underset{\alpha}{min} \quad \frac 1 2 \sum_{i=1}^n \sum_{j=1}^n \alpha_i \alpha_j y_i y_j K(X_i,X_j) \ - \ \sum_{i=1}^n \alpha_i \\\\ & s.t. \quad \sum_{i=1}^n \alpha_i y_i = 0 \\\\ & \qquad 0 \le \alpha_i \le C, i=1,2,…,n. \end{aligned} 
-  $$
+  $$\begin{aligned} & \underset{\alpha}{min} \quad \frac 1 2 \sum_{i=1}^n \sum_{j=1}^n \alpha_i \alpha_j y_i y_j K(X_i,X_j) \ - \ \sum_{i=1}^n \alpha_i \\\\ & s.t. \quad \sum_{i=1}^n \alpha_i y_i = 0 \\\\ & \qquad 0 \le \alpha_i \le C, i=1,2,…,n. \end{aligned} $$
 
   再利用现成的二次规划问题求解算法或者 SMO 算法求得最优解 $\hat{\alpha}$ 。
 
 * 选择 $\hat{\alpha}$ 的满足 $0 < \hat{\alpha}_j < C$ 的分量 $\hat{\alpha}_j$ ，计算截距
 
-  $$
-  \hat{b} = y_j-\sum_{i \in SV} \hat{\alpha}_i y_i K(X_j,X_i) 
-  $$
+  $$\hat{b} = y_j-\sum_{i \in SV} \hat{\alpha}_i y_i K(X_j,X_i) $$
 
 * 决策函数：  
 
-  $$
-  f(x)=sign(\sum_{i \in SV}\hat{\alpha}_i y_i K(X_j,X_i) + \hat{b}) 
-  $$
+  $$f(x)=sign(\sum_{i \in SV}\hat{\alpha}_i y_i K(X_j,X_i) + \hat{b}) $$
 
 #### 更细节地讲
 
 - 首先计算核矩阵K：
 
-$$
-K_{i,j}=K(x_i,x_j)
-$$
+$$K_{i,j}=K(x_i,x_j)$$
 
 核函数我选择使用高斯核函数
-$$
-K(x,z) = exp(- \frac {||x-z||^2} {2 \sigma^2} )
-$$
+$$K(x,z) = exp(- \frac {||x-z||^2} {2 \sigma^2} )$$
 
 
 - 初始化拉格朗日乘子 $\alpha$，直接将其置为全0即可
@@ -1121,38 +1086,26 @@ $$
 
 - 对每次循环（不超过最大迭代次数前提下）：
   - 首先复制原有的 $\alpha$：
-    $$
-    \alpha_{old} = \alpha
-    $$
+    $$\alpha_{old} = \alpha$$
   
   - 对第 $i$ 个样本（$i \in [0,n],n=len(X_{train})$：
   
     - 计算预测值和误差：
-      $$
-      E_i = f(x_i) - y_i = \sum_{j=1}^n \alpha_j y_j K(x_i,x_j) + b-y_i
-      $$
+      $$E_i = f(x_i) - y_i = \sum_{j=1}^n \alpha_j y_j K(x_i,x_j) + b-y_i$$
   
     - 计算 KKT 条件：
-      $$
-      \begin{cases}
-      y_i\cdot E_i < -tol , alpha_i < C \\y_i\cdot E_i > tol, \alpha_i >0 
-      \end{cases}
-      $$
+      $$\begin{cases}y_i\cdot E_i < -tol , alpha_i < C \\y_i\cdot E_i > tol, \alpha_i >0 \end{cases}$$
   
     -  随机选择另一个下标为 $j$ 的拉格朗日乘子（$i\neq j$）
   
     - 计算预测值和误差
-      $$
-      E_j = \sum_{j=1}^n \alpha_j y_j K(\mathbf{x}_j,\mathbf{x}_j) + b-y_j
-      $$
+      $$E_j = \sum_{j=1}^n \alpha_j y_j K(\mathbf{x}_j,\mathbf{x}_j) + b-y_j$$
       
   
     - 保存 $\alpha$ 的值
   
     - 计算裁剪上下界：
-      $$
-       \text{if}\ y_i =y_j\\ L,H = \text{max}(0,\alpha_j+\alpha_i-C),\text{min}(C,\alpha_j+\alpha_i)\ \\\text{else}\\ L,H = \text{max}(0,\alpha_j-\alpha_i),\text{min}(C,C+\alpha_j-\alpha_i) 
-      $$
+      $$\text{if}\ y_i =y_j\\ L,H = \text{max}(0,\alpha_j+\alpha_i-C),\text{min}(C,\alpha_j+\alpha_i)\ \\\text{else}\\ L,H = \text{max}(0,\alpha_j-\alpha_i),\text{min}(C,C+\alpha_j-\alpha_i) $$
       
   
     - 如果 $L = H$，直接进入下一轮循环。
@@ -1164,22 +1117,7 @@ $$
     - 更新$\alpha_j$ ，即：令 $\alpha_j=\alpha_j + \frac{y_j(E_i-E_j)}{\eta}$
   
     - 将 $alpha[j]$ 裁剪到 $[L,H]$
-      $$
-      \alpha_j = 
-      
-      \begin{cases}
-      
-      H 
-      & ,\text{if}\ \alpha_j > H \\ 
-      
-      \alpha_j
-      & ,\text{if}\ L \le \alpha_j\leq H \\ 
-      
-      L 
-      & ,\text{if}\ \alpha_j < L 
-      
-      \end{cases}
-      $$
+      $$\alpha_j = \begin{cases}H & ,\text{if}\ \alpha_j > H \\  \alpha_j& ,\text{if}\ L \le \alpha_j\leq H \\ L & ,\text{if}\ \alpha_j < L \end{cases}$$
       
   
     - 检查 $alpha[j]$ 是否有足够的变化量，如果变化不足，进入下一轮循环。
@@ -1207,9 +1145,7 @@ $$
 1. 选取一对需要更新的变量 $a_i$ 和 $a_j$
 
 2. 固定 $a_i$ 和 $a_j$ 以外的参数，求解对偶问题式 来更新 $a_i$ 和 $a_j$：
-   $$
-   \underset{\alpha}{min} \quad \frac 1 2 \sum_{i=1}^n \sum_{j=1}^n \alpha_i \alpha_j y_i y_j X_i^T X_j \ - \ \sum_{i=1}^n \alpha_i 
-   $$
+   $$\underset{\alpha}{min} \quad \frac 1 2 \sum_{i=1}^n \sum_{j=1}^n \alpha_i \alpha_j y_i y_j X_i^T X_j \ - \ \sum_{i=1}^n \alpha_i$$
    
 
 **怎么选取 $a_i$ 和 $a_j$ 呢？**
@@ -1233,9 +1169,7 @@ SMO中，中间变量 $\eta$ 起到了一个重要的作用，它用于计算非
 在SMO算法中，$\alpha_i$ 和 $\alpha_j$ 的更新可能会对偏移量 $b$ 产生影响，因为每个支持向量都对应有一个 $\alpha$ 值，它们都可以成为 $b$ 的一个备选值。因此，在更新完 $\alpha_i$ 和 $\alpha_j$ 后，需要更新 $b$ 的值。
 
 在SMO算法的每一次迭代中，对于非支持向量的 $\alpha_j$，使用下式更新 $b$
-$$
-b_j=-E_j-y_j\sum_{i\in S}\alpha_iy_iK_{i,j}-\epsilon_j
-$$
+$$b_j=-E_j-y_j\sum_{i\in S}\alpha_iy_iK_{i,j}-\epsilon_j$$
 其中 $S$ 表示支持向量的集合，$\epsilon_i$ 是由它的拉格朗日乘子 $\alpha_i$ 对 $b$ 带来的增量。
 
 ![](机器学习实验/8.png)
