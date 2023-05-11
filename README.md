@@ -5,6 +5,7 @@ tags: 学习
 categories: 机器学习
 ---
 
+github渲染属实离谱，有些公式需要大概，可以直接参考：https://www.zwn2001.space/2023/03/29/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0%E5%AE%9E%E9%AA%8C/
 # 机器学习实验
 
 ## 贝叶斯分类器在鸢尾花数据集的实现
