@@ -119,13 +119,13 @@ if __name__ == '__main__':
     clf = SVM(C=0.6, gamma=0.8, max_iter=500)
     for k in range(3):
         # 将k类样本设为+1，其他样本设为-1
-        y_train_ova = np.where(y_train == k, 1, -1)
-        clf.fit(X_train, y_train_ova)
-        y_test_ova = np.where(y_test == k, 1, -1)
-        y_pred_ova = clf.predict(X_test)
+        y_train_ovr = np.where(y_train == k, 1, -1)
+        clf.fit(X_train, y_train_ovr)
+        y_test_ovr = np.where(y_test == k, 1, -1)
+        y_pred_ovr = clf.predict(X_test)
         # 将+1类预测结果转化为k
-        y_pred_ova[y_pred_ova > 0] = k
-        y_pred[y_test_ova == 1] = y_pred_ova[y_test_ova == 1]
+        y_pred_ovr[y_pred_ovr > 0] = k
+        y_pred[y_test_ovr == 1] = y_pred_ovr[y_test_ovr == 1]
 
     acc = np.mean(y_pred == y_test)
     print('Accuracy:', acc)
