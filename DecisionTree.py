@@ -23,14 +23,14 @@ class DecisionTree:
         self.min_samples_leaf = min_samples_leaf  # 叶节点最小样本数
         self.root = None  # 决策树的根节点
 
-    # 计算基尼指数
-    def gini(self, y):
-        classes = np.unique(y)
-        n_sample = y.shape[0]
-        gini = 0
-        for cls in classes:
-            gini += (np.sum(y == cls) / n_sample) ** 2
-        return 1 - gini
+    # # 计算基尼指数
+    # def gini(self, y):
+    #     classes = np.unique(y)
+    #     n_sample = y.shape[0]
+    #     gini = 0
+    #     for cls in classes:
+    #         gini += (np.sum(y == cls) / n_sample) ** 2
+    #     return 1 - gini
 
     # 计算信息熵
     def entropy(self, y):
